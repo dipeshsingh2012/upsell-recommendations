@@ -29,7 +29,7 @@ async def generate_recommendations(user_id: str) -> list[dict]:
     """
     _ensure_init()
 
-    model = GenerativeModel("gemini-1.5-flash-001")
+    model = GenerativeModel("gemini-1.5-flash-002")
 
     prompt = (
         f"You are a retail personalization engine. Generate exactly 4 product upsell "
