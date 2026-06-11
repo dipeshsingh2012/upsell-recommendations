@@ -10,7 +10,8 @@ REGION="us-central1"
 REPO_NAME="upsell-api"
 IMAGE_NAME="upsell-backend"
 SERVICE_NAME="upsell-recommendations"
-IMAGE_TAG="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:latest"
+VERSION="v$(date +%s)"
+IMAGE_TAG="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:${VERSION}"
 
 echo "==> Pulling latest code..."
 git pull
