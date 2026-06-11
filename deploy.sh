@@ -1,51 +1,43 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 # ==============================================================
-# GCP Cloud Run Deployment Commands
+# GCP Cloud Run Deployment Script
 # ==============================================================
 
-# --- Configuration (edit these) ---
 PROJECT_ID="upsell-recommendation"
 REGION="us-central1"
 REPO_NAME="upsell-api"
 IMAGE_NAME="upsell-backend"
 SERVICE_NAME="upsell-recommendations"
+IMAGE_TAG="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:latest"
 
-# --- Step 1: Authenticate & set project ---
-gcloud auth login
+echo "==> Setting project..."
 gcloud config set project $PROJECT_ID
 
-# --- Step 2: Enable required APIs ---
-gcloud services enable \
-  run.googleapis.com \
-  artifactregistry.googleapis.com \
-  aiplatform.googleapis.com
+echo "==> Enabling APIs..."
+gcloud services enable run.googleapis.com artifactregistry.googleapis.com aiplatform.googleapis.com
 
-# --- Step 3: Create Artifact Registry repository (one-time) ---
+echo "==> Creating Artifact Registry repo (if not exists)..."
 gcloud artifacts repositories create $REPO_NAME \
   --repository-format=docker \
-  --location=$REGION
+  --location=$REGION 2>/dev/null || echo "    (already exists)"
 
-# --- Step 4: Configure Docker authentication ---
-gcloud auth configure-docker ${REGION}-docker.pkg.dev
+echo "==> Building & pushing image via Cloud Build..."
+gcloud builds submit ./backend --tag $IMAGE_TAG
 
-# --- Step 5: Build & push container image ---
-cd backend
-
-docker build -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:latest .
-
-docker push ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:latest
-
-# --- Step 6: Deploy to Cloud Run ---
+echo "==> Deploying to Cloud Run..."
 gcloud run deploy $SERVICE_NAME \
-  --image=${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:latest \
+  --image=$IMAGE_TAG \
   --region=$REGION \
   --platform=managed \
   --allow-unauthenticated \
-  --set-env-vars="GCP_PROJECT_ID=${PROJECT_ID},GCP_LOCATION=${REGION},ALLOWED_ORIGINS=https://your-app.vercel.app" \
+  --set-env-vars="GCP_PROJECT_ID=${PROJECT_ID},GCP_LOCATION=${REGION},ALLOWED_ORIGINS=https://upsell-recommendations.vercel.app" \
   --memory=512Mi \
   --cpu=1 \
   --min-instances=0 \
   --max-instances=10
 
-# --- Step 7: Get the deployed URL ---
+echo ""
+echo "==> Deployed! Service URL:"
 gcloud run services describe $SERVICE_NAME --region=$REGION --format="value(status.url)"
