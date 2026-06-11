@@ -9,5 +9,5 @@ echo "==> Testing Gemini model access..."
 curl -s -H "Authorization: Bearer $(gcloud auth print-access-token)" \
   "https://${REGION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/publishers/google/models/${MODEL}:generateContent" \
   -H "Content-Type: application/json" \
-  -d '{"contents":[{"parts":[{"text":"Say hello"}]}'
+  -d '{"contents":[{"parts":[{"text":"Say hello"}]}]}'
 echo ""
