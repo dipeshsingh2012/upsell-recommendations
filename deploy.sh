@@ -12,6 +12,9 @@ IMAGE_NAME="upsell-backend"
 SERVICE_NAME="upsell-recommendations"
 IMAGE_TAG="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:latest"
 
+echo "==> Pulling latest code..."
+git pull
+
 echo "==> Setting project..."
 gcloud config set project $PROJECT_ID
 
