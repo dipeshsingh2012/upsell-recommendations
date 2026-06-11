@@ -19,7 +19,7 @@ echo "==> Setting project..."
 gcloud config set project $PROJECT_ID
 
 echo "==> Enabling APIs..."
-gcloud services enable run.googleapis.com artifactregistry.googleapis.com aiplatform.googleapis.com
+gcloud services enable run.googleapis.com artifactregistry.googleapis.com aiplatform.googleapis.com cloudbuild.googleapis.com
 
 echo "==> Creating Artifact Registry repo (if not exists)..."
 gcloud artifacts repositories create $REPO_NAME \
