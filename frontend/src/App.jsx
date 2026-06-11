@@ -8,7 +8,7 @@ export default function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/v1/recommendations/demo-user-42`)
+    fetch(`${API_URL}/api/v1/dummy/demo-user-42`)
       .then((res) => {
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         return res.json();
