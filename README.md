@@ -15,11 +15,9 @@ Real-time AI-powered e-commerce recommendation engine using FastAPI + Vertex AI 
 
 ```bash
 cd backend
-python -m venv .venv
-.venv\Scripts\activate        # Windows
-pip install -r requirements.txt
 copy .env.example .env        # Edit with your GCP project details
-uvicorn app.main:app --reload --port 8000
+uv sync
+uv run uvicorn app.main:app --reload --port 8000
 ```
 
 ### Frontend
