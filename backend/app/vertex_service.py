@@ -25,7 +25,7 @@ async def generate_recommendations(user_id: str, name: str = "") -> list[dict]:
     """Call Gemini to produce contextual upsell recommendations as structured JSON."""
     _ensure_init()
 
-    model = GenerativeModel("gemini-2.0-flash-lite")
+    model = GenerativeModel("gemini-2.5-flash")
 
     user_context = f"named '{name}' " if name else ""
     prompt = (
