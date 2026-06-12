@@ -2,9 +2,9 @@
 
 import json
 import os
+import re
 
 from vertexai.generative_models import GenerativeModel, GenerationConfig
-from google.cloud.aiplatform_v1beta1.types import content as content_types
 import vertexai
 
 
@@ -54,7 +54,6 @@ async def generate_recommendations(user_id: str, name: str = "", persona: str = 
         response_mime_type="application/json",
         temperature=0.7,
         max_output_tokens=1024,
-        thinking_config=content_types.ThinkingConfig(thinking_budget=0),
     )
 
     # Vertex AI SDK's generate_content_async provides true async I/O
@@ -63,4 +62,10 @@ async def generate_recommendations(user_id: str, name: str = "", persona: str = 
         generation_config=generation_config,
     )
 
-    return json.loads(response.text)
+    text = response.text.strip()
+    # Strip markdown code fences if present
+    text = re.sub(r"^```json\s*", "", text)
+    text = re.sub(r"\s*```$", "", text)
+    # Fix trailing commas before ] or }
+    text = re.sub(r",\s*([\]}])", r"\1", text)
+    return json.loads(text)
