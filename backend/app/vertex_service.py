@@ -21,19 +21,16 @@ def _ensure_init():
         _initialized = True
 
 
-async def generate_recommendations(user_id: str) -> list[dict]:
-    """Call Gemini to produce contextual upsell recommendations as structured JSON.
-
-    Uses response_mime_type to guarantee valid JSON output from the model,
-    eliminating the need for fragile regex parsing.
-    """
+async def generate_recommendations(user_id: str, name: str = "") -> list[dict]:
+    """Call Gemini to produce contextual upsell recommendations as structured JSON."""
     _ensure_init()
 
     model = GenerativeModel("gemini-2.0-flash-lite")
 
+    user_context = f"named '{name}' " if name else ""
     prompt = (
         f"You are a retail personalization engine. Generate exactly 4 product upsell "
-        f"recommendations for user '{user_id}'. Each item MUST have these fields: "
+        f"recommendations for user {user_context}(ID: '{user_id}'). Each item MUST have these fields: "
         f"id (int), title (string), description (string), price (float > 0), "
         f"matching_reason (string explaining why this product suits the user). "
         f"Return ONLY a JSON array of objects."

@@ -34,7 +34,7 @@ export default function App() {
           Sign out
         </button>
       </div>
-      <UpsellWidget userId={user.uid} />
+      <UpsellWidget userId={user.uid} displayName={user.displayName} />
     </div>
   );
 }
