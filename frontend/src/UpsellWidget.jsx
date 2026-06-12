@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-export default function UpsellWidget({ userId = "demo-user-42", displayName = "" }) {
+export default function UpsellWidget({ userId = "demo-user-42", displayName = "", persona = "" }) {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/v1/recommendations/${userId}?name=${encodeURIComponent(displayName)}`)
+    fetch(`${API_URL}/api/v1/recommendations/${userId}?name=${encodeURIComponent(displayName)}&persona=${encodeURIComponent(persona)}`)
       .then((res) => {
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         return res.json();

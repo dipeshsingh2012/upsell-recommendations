@@ -21,16 +21,29 @@ def _ensure_init():
         _initialized = True
 
 
-async def generate_recommendations(user_id: str, name: str = "") -> list[dict]:
+PERSONA_CONTEXT = {
+    "small_business": "a small business owner who needs branding and marketing materials",
+    "marketing": "a marketing professional running campaigns and promotions",
+    "event_planner": "an event planner organizing weddings, parties, and corporate events",
+    "personal": "an individual looking for personal projects like gifts and custom items",
+}
+
+
+async def generate_recommendations(user_id: str, name: str = "", persona: str = "") -> list[dict]:
     """Call Gemini to produce contextual upsell recommendations as structured JSON."""
     _ensure_init()
 
     model = GenerativeModel("gemini-2.5-flash")
 
     user_context = f"named '{name}' " if name else ""
+    persona_context = PERSONA_CONTEXT.get(persona, "a general customer")
     prompt = (
-        f"You are a retail personalization engine. Generate exactly 4 product upsell "
-        f"recommendations for user {user_context}(ID: '{user_id}'). Each item MUST have these fields: "
+        f"You are a product recommendation engine for a print & design e-commerce store "
+        f"(similar to Vistaprint). Generate exactly 4 product upsell recommendations "
+        f"for user {user_context}who is {persona_context}. "
+        f"Products should be from categories like: business cards, flyers, banners, "
+        f"t-shirts, mugs, stickers, postcards, invitations, signage, labels, letterheads, envelopes. "
+        f"Each item MUST have these fields: "
         f"id (int), title (string), description (string), price (float > 0), "
         f"matching_reason (string explaining why this product suits the user). "
         f"Return ONLY a JSON array of objects."

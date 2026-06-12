@@ -9,10 +9,10 @@ router = APIRouter(prefix="/api/v1", tags=["recommendations"])
 
 
 @router.get("/recommendations/{user_id}", response_model=RecommendationResponse)
-async def get_recommendations(user_id: str, name: str = ""):
+async def get_recommendations(user_id: str, name: str = "", persona: str = ""):
     """Orchestrate: receive request -> call Vertex AI -> validate -> respond."""
     try:
-        raw = await generate_recommendations(user_id, name)
+        raw = await generate_recommendations(user_id, name, persona)
         recommendations = [Recommendation(**item) for item in raw]
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")

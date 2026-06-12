@@ -1,13 +1,24 @@
 import { useState, useEffect } from "react";
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
+import PersonaPicker from "./PersonaPicker";
 import UpsellWidget from "./UpsellWidget";
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [persona, setPersona] = useState(null);
 
-  useEffect(() => onAuthStateChanged(auth, (u) => { setUser(u); setLoading(false); }), []);
+  useEffect(() => onAuthStateChanged(auth, (u) => {
+    setUser(u);
+    if (u) setPersona(localStorage.getItem(`persona_${u.uid}`));
+    setLoading(false);
+  }), []);
+
+  const handlePersonaSelect = (p) => {
+    localStorage.setItem(`persona_${user.uid}`, p);
+    setPersona(p);
+  };
 
   if (loading) return null;
 
@@ -34,7 +45,11 @@ export default function App() {
           Sign out
         </button>
       </div>
-      <UpsellWidget userId={user.uid} displayName={user.displayName} />
+      {!persona ? (
+        <PersonaPicker onSelect={handlePersonaSelect} />
+      ) : (
+        <UpsellWidget userId={user.uid} displayName={user.displayName} persona={persona} />
+      )}
     </div>
   );
 }
