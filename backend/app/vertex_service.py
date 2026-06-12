@@ -4,6 +4,7 @@ import json
 import os
 
 from vertexai.generative_models import GenerativeModel, GenerationConfig
+from google.cloud.aiplatform_v1beta1.types import content as content_types
 import vertexai
 
 
@@ -53,6 +54,7 @@ async def generate_recommendations(user_id: str, name: str = "", persona: str = 
         response_mime_type="application/json",
         temperature=0.7,
         max_output_tokens=1024,
+        thinking_config=content_types.ThinkingConfig(thinking_budget=0),
     )
 
     # Vertex AI SDK's generate_content_async provides true async I/O
