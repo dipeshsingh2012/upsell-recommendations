@@ -53,7 +53,7 @@ async def generate_recommendations(user_id: str, name: str = "", persona: str = 
     generation_config = GenerationConfig(
         response_mime_type="application/json",
         temperature=0.7,
-        max_output_tokens=1024,
+        max_output_tokens=4096,
     )
 
     # Vertex AI SDK's generate_content_async provides true async I/O
