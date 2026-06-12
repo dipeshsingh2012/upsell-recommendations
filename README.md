@@ -1,12 +1,11 @@
 # Upsell & Recommendations Dashboard
 
-Real-time AI-powered e-commerce recommendation engine using FastAPI + Vertex AI Gemini + React.
+Real-time AI-powered e-commerce recommendation engine using FastAPI + Vertex AI Gemini + React MFE.
 
 ## Architecture
 
 ```
-[React/Vite Frontend] --HTTPS--> [FastAPI on Cloud Run] --gRPC--> [Vertex AI Gemini]
-     (Vercel)                        (Docker Container)            (Model Garden)
+[Host App (Vercel)] --Module Federation--> [Remote MFE (Vercel)] --HTTPS--> [FastAPI (Cloud Run)] --gRPC--> [Vertex AI Gemini]
 ```
 
 ## Quick Start (Local Development)
@@ -20,23 +19,33 @@ uv sync
 uv run uvicorn app.main:app --reload --port 8000
 ```
 
-### Frontend
+### Frontend (Remote MFE)
 
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run build
+npm run preview               # http://localhost:4173
 ```
 
-Frontend: http://localhost:5173 | Backend: http://localhost:8000/docs
+### Host App
+
+```bash
+cd host
+npm install
+npm run build
+npm run preview               # http://localhost:4174
+```
 
 ## Deployment
 
-See `deploy.sh` for the full GCP Cloud Run deployment checklist.
+- **Backend**: Auto-deploys to Cloud Run on push to `main` (via GitHub Actions)
+- **Frontend (Remote)**: Vercel (root: `frontend`)
+- **Host**: Vercel (root: `host`, set `VITE_REMOTE_URL` env var to remote's URL)
 
 ## Tech Stack
 
-- **Backend**: Python 3.11, FastAPI, Pydantic v2, Vertex AI SDK
-- **Frontend**: React 18, Vite, Tailwind CSS
-- **Infrastructure**: Docker, GCP Cloud Run, Artifact Registry
+- **Backend**: Python 3.11, FastAPI, Pydantic v2, Vertex AI SDK, uv
+- **Frontend**: React 18, Vite, Tailwind CSS, Module Federation
+- **Infrastructure**: Docker, GCP Cloud Run, Vercel, GitHub Actions
 - **AI**: Gemini 1.5 Flash via Vertex AI Model Garden
