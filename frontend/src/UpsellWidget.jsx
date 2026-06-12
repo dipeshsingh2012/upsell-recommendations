@@ -8,7 +8,7 @@ export default function UpsellWidget({ userId = "demo-user-42" }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/v1/dummy/${userId}`)
+    fetch(`${API_URL}/api/v1/recommendations/${userId}`)
       .then((res) => {
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         return res.json();
